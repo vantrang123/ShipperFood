@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity
             Home();
         }*/
 
+        Home();
+
 
     }
     /*public void replace(Fragment fragment) {
@@ -100,7 +102,6 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.fragment_container, new OrderStatusFragment())
                 .commit();*/
     }
-
 
     @Override
     public void onBackPressed() {
@@ -144,15 +145,9 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.nav_cart:
-//                transaction.hide(getSupportFragmentManager().findFragmentById(R.id.fragment_container));
-                Cart();
-                Toast.makeText(MainActivity.this, "cart", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.nav_status:
+            case R.id.nav_location:
                 OrderStatus();
-                Toast.makeText(MainActivity.this, "order status", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Location", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.nav_exit:

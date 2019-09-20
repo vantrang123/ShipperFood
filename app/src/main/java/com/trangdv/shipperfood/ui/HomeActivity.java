@@ -166,13 +166,13 @@ public class HomeActivity extends AppCompatActivity {
                 viewHolder.btnShipping.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*Common.createShippingOrder(adapter.getRef(position).getKey(),
+                        Common.createShippingOrder(adapter.getRef(position).getKey(),
                                 Common.currentShipper.getPhone(),
                                 mLastLocation);
                         Common.currentRequest = model;
                         Common.currentKey = adapter.getRef(position).getKey();
 
-                        startActivity(new Intent(HomeActivity.this, TrackingOrder.class));*/
+                        startActivity(new Intent(HomeActivity.this, TrackingOrder.class));
                         Toast.makeText(HomeActivity.this, "ok", Toast.LENGTH_SHORT).show();
                     }
                 });

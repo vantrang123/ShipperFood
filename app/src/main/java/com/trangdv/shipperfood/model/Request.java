@@ -12,6 +12,8 @@ public class Request {
     private String comment;
     private String paymentMethod;
     private String latLng;
+    private String latitude;
+    private String longitude;
     private List<Order> foods;
 
     public Request() {
@@ -29,6 +31,8 @@ public class Request {
         this.latLng = latLng;
         this.foods = foods;
     }
+
+
 
     public String getPhone() {
         return phone;
@@ -100,5 +104,21 @@ public class Request {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }
