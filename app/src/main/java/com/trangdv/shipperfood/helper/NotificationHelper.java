@@ -52,7 +52,7 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentIntent(contentIntent)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.ic_local_shipping_black_24dp)
+                .setSmallIcon(R.drawable.ic_shipping_black)
                 .setSound(soundUri)
                 .setAutoCancel(false);
     }

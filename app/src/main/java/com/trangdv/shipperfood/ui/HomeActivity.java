@@ -121,13 +121,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
+
                             return;
                         }
                         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
@@ -179,6 +173,7 @@ public class HomeActivity extends AppCompatActivity {
                         Common.currentKey = adapter.getRef(position).getKey();
 
                         startActivity(new Intent(HomeActivity.this, TrackingOrder.class));*/
+                        Toast.makeText(HomeActivity.this, "ok", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
