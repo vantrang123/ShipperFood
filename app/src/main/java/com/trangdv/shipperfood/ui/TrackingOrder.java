@@ -66,15 +66,9 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private static final String TAG = "TrackingOrder";
-    FusedLocationProviderClient fusedLocationProviderClient;
-    LocationCallback locationCallback;
-    LocationRequest locationRequest;
     Location mLastLocation;
-    Request currentOrder;
 
     private CameraPosition mCameraPosition;
-    Marker mCurrentMarker;
-    IGeoCoordinates mService;
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private final static int LOCATION_PERMISSION_REQUEST = 1001;
@@ -128,51 +122,34 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestRuntimePermission();
         } else {
-            /*mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-            if (mLastLocation != null) {
-                double lat = mLastLocation.getLatitude();
-                double lgn = mLastLocation.getLongitude();
-
-                LatLng yourLocation = new LatLng(lat, lgn);
-                mMap.addMarker(new MarkerOptions().position(yourLocation).title("Your Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
-
-                drawRoute(yourLocation, Common.currentRequest.getLatitude(), Common.currentRequest.getLongitude());
-            } else {
-                Toast.makeText(this, "Cannot retrieve the location!!", Toast.LENGTH_SHORT).show();
-            }*/
 
             Task locationResult = mFusedLocationProviderClient.getLastLocation();
             locationResult.addOnCompleteListener(this, new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
+
                         mLastLocation = (Location) task.getResult();
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mLastLocation.getLatitude(),
                                         mLastLocation.getLongitude()), DEFAULT_ZOOM));
 
                         LatLng yourLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                        Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.box, null);
+                        Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.my_location, null);
                         Bitmap bitmap = ((BitmapDrawable) myDrawable).getBitmap();
                         bitmap = Common.scaleBitmap(bitmap, 70, 70);
                         MarkerOptions marker = new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-                                .title("Order of " + Common.currentRequest.getPhone())
+                                .title("Order of " + Common.currentShipper.getPhone())
                                 .position(yourLocation);
                         mMap.addMarker(marker);
-                        //
-                        /*double lat = mLastLocation.getLatitude();
-                        double lgn = mLastLocation.getLongitude();
-                        LatLng yourLocation = new LatLng(lat, lgn);
 
-                        drawRoute(yourLocation, Common.currentRequest.getLatitude(), Common.currentRequest.getLongitude());*/
 
                         String latitude = Common.currentRequest.getLatitude();
                         String longitude = Common.currentRequest.getLongitude();
                         LatLng orderLocation = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                        myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.box, null);
+                        bitmap = ((BitmapDrawable) myDrawable).getBitmap();
+                        bitmap = Common.scaleBitmap(bitmap, 70, 70);
                         MarkerOptions markerOrder = new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(bitmap))
                                 .title("Order of " + Common.currentRequest.getPhone())
                                 .position(orderLocation);
@@ -189,31 +166,6 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
         }
     }
 
-    private void drawRoute(final LatLng yourLocation, String latitude, String longitude) {
-
-        LatLng orderLocation = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-
-        Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.box, null);
-        Bitmap bitmap = ((BitmapDrawable) myDrawable).getBitmap();
-        bitmap = Common.scaleBitmap(bitmap, 70, 70);
-        MarkerOptions marker = new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-                .title("Order of " + Common.currentRequest.getPhone())
-                .position(orderLocation);
-        mMap.addMarker(marker);
-
-        /*mService.getDirections(yourLocation.latitude + "," + yourLocation.longitude, orderLocation.latitude + "," + orderLocation.longitude)
-                .enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        new ParserTask().execute(response.body().toString());
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-
-                    }
-                });*/
-    }
 
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -325,64 +277,6 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
         super.onStart();
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
-        }
-    }
-
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
-        SpotsDialog mDialog = new SpotsDialog(TrackingOrder.this);
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mDialog.setMessage("Please Wait...");
-            mDialog.show();
-        }
-
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
-            try {
-                jObject = new JSONObject(strings[0]);
-
-                DirectionJSONParser parser = new DirectionJSONParser();
-
-                routes = parser.parse(jObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return routes;
-        }
-
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
-            mDialog.dismiss();
-
-            ArrayList points = null;
-            PolylineOptions lineOptions = null;
-
-            for (int i = 0; i < lists.size(); i++) {
-                points = new ArrayList();
-                lineOptions = new PolylineOptions();
-
-                List<HashMap<String, String>> path = lists.get(i);
-
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
-
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-                lineOptions.addAll(points);
-                lineOptions.width(12);
-                lineOptions.color(Color.BLUE);
-                lineOptions.geodesic(true);
-            }
-            mMap.addPolyline(lineOptions);
         }
     }
 
