@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.trangdv.shipperfood.Remote.IGeoCoordinates;
-import com.trangdv.shipperfood.Remote.RetrofitClient;
+import com.trangdv.shipperfood.remote.IGeoCoordinates;
+import com.trangdv.shipperfood.remote.RetrofitClient;
 import com.trangdv.shipperfood.model.Request;
 import com.trangdv.shipperfood.model.Shipper;
 import com.trangdv.shipperfood.model.ShippingInformation;
