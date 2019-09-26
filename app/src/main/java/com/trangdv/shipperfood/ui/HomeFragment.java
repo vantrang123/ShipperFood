@@ -162,11 +162,11 @@ public class HomeFragment extends Fragment {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 mLastLocation = locationResult.getLastLocation();
-                Toast.makeText(getContext(), new StringBuffer("")
+                /*Toast.makeText(getContext(), new StringBuffer("")
                         .append(mLastLocation.getLatitude())
                         .append("/")
                         .append(mLastLocation.getLongitude())
-                        .toString(), Toast.LENGTH_LONG).show();
+                        .toString(), Toast.LENGTH_LONG).show();*/
             }
         };
     }
