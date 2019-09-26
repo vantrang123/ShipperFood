@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity
         txtUserName = headerView.findViewById(R.id.tv_username);
         txtUserName.setText(Common.currentShipper.getName());
 
+
+
         /*Intent service = new Intent(MainActivity.this, ListenOrder.class);
         startService(service);
         sFragment = getIntent().getStringExtra("startFragment");
@@ -88,14 +90,6 @@ public class MainActivity extends AppCompatActivity
         finish();
     }
 
-    public void Cart() {
-        /*getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new CartFragment())
-                .addToBackStack(null)
-                .commit();*/
-        /*Intent intent = new Intent(this, Cart.class);
-        startActivity(intent);*/
-    }
 
     public void OrderStatus() {
         /*fragmentManager.beginTransaction()
