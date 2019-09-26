@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Token;
@@ -17,6 +18,8 @@ public class MyFirebaseIdService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        /*InstanceIdResult instanceIdResult = null;
+        instanceIdResult.getToken();*/
         updateToServer(refreshedToken);
     }
 
