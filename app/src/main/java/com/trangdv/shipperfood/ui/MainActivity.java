@@ -59,18 +59,6 @@ public class MainActivity extends AppCompatActivity
         txtUserName = headerView.findViewById(R.id.tv_username);
         txtUserName.setText(Common.currentShipper.getName());
 
-        /*Intent service = new Intent(MainActivity.this, ListenOrder.class);
-        startService(service);
-        sFragment = getIntent().getStringExtra("startFragment");
-        if (sFragment != null) {
-            OrderStatus();
-        } else {
-            Home();
-        }*/
-
-        Home();
-
-
     }
     /*public void replace(Fragment fragment) {
         fragmentManager.beginTransaction()
@@ -80,22 +68,11 @@ public class MainActivity extends AppCompatActivity
     }*/
 
     public void Home() {
-        /*fragmentManager.beginTransaction()
+        fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new HomeFragment())
-                .commit();*/
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(intent);
-        finish();
+                .commit();
     }
 
-    public void Cart() {
-        /*getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new CartFragment())
-                .addToBackStack(null)
-                .commit();*/
-        /*Intent intent = new Intent(this, Cart.class);
-        startActivity(intent);*/
-    }
 
     public void OrderStatus() {
         /*fragmentManager.beginTransaction()

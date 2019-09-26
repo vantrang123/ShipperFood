@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,8 +37,8 @@ import com.trangdv.shipperfood.model.Request;
 import com.trangdv.shipperfood.model.Token;
 import com.trangdv.shipperfood.viewholder.OrderViewHolder;
 
-public class HomeActivity extends AppCompatActivity {
-    private static final String TAG = "HomeActivity";
+public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment";
 
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
@@ -53,39 +53,30 @@ public class HomeActivity extends AppCompatActivity {
 
     FirebaseRecyclerAdapter<Request, OrderViewHolder> adapter;
 
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home);
-
-        //check permission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.CALL_PHONE
-            }, Common.REQUEST_CODE);
-        } else {
-            buildLocationRequest();
-            buildLocationCallBack();
-
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-        }
-
         database = FirebaseDatabase.getInstance();
         shipperOrders = database.getReference(Common.ORDER_NEED_SHIP_TABLE);
+    }
 
-        recyclerView = findViewById(R.id.recycler_orders);
-        layoutManager = new LinearLayoutManager(this);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView = view.findViewById(R.id.recycler_orders);
+        layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( HomeActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+        // token
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( getActivity(),  new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 String newToken = instanceIdResult.getToken();
@@ -95,8 +86,66 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        //check permission
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.CALL_PHONE
+            }, Common.REQUEST_CODE);
+        } else {
+            buildLocationRequest();
+            buildLocationCallBack();
 
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+        }
+
+        // load data
         loadAllOrderNeedShip(Common.currentShipper.getPhone());
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadAllOrderNeedShip(Common.currentShipper.getPhone());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case Common.REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        buildLocationRequest();
+                        buildLocationCallBack();
+
+                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                            return;
+                        }
+                        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity(), "You Should Assign Permission!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            break;
+            default:
+                break;
+        }
     }
 
     private void buildLocationRequest() {
@@ -113,42 +162,13 @@ public class HomeActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 mLastLocation = locationResult.getLastLocation();
-                Toast.makeText(HomeActivity.this, new StringBuffer("")
-                .append(mLastLocation.getLatitude())
-                .append("/")
-                .append(mLastLocation.getLongitude())
-                        .toString(), Toast.LENGTH_LONG).show();
+                /*Toast.makeText(getContext(), new StringBuffer("")
+                        .append(mLastLocation.getLatitude())
+                        .append("/")
+                        .append(mLastLocation.getLongitude())
+                        .toString(), Toast.LENGTH_LONG).show();*/
             }
         };
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case Common.REQUEST_CODE: {
-                if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        buildLocationRequest();
-                        buildLocationCallBack();
-
-                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                            return;
-                        }
-                        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-                    }
-                    else
-                    {
-                        Toast.makeText(this, "You Should Assign Permission!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            break;
-            default:
-                break;
-        }
     }
 
     private void updateTokenShipper(String token) {
@@ -185,8 +205,8 @@ public class HomeActivity extends AppCompatActivity {
                         Common.currentRequest = model;
                         Common.currentKey = adapter.getRef(position).getKey();
 
-                        startActivity(new Intent(HomeActivity.this, TrackingOrder.class));
-                        Toast.makeText(HomeActivity.this, "ok", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getActivity(), TrackingOrder.class));
+                        //Toast.makeText(getContext(), "ok", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -204,11 +224,4 @@ public class HomeActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadAllOrderNeedShip(Common.currentShipper.getPhone());
-    }
-
 }

@@ -3,16 +3,12 @@ package com.trangdv.shipperfood.ui;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 
 import android.widget.Toast;
 
@@ -26,9 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,30 +31,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.trangdv.shipperfood.R;
-import com.trangdv.shipperfood.Remote.IGeoCoordinates;
 import com.trangdv.shipperfood.common.Common;
-import com.trangdv.shipperfood.model.Request;
-import com.trangdv.shipperfood.viewholder.DirectionJSONParser;
-
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-
-import dmax.dialog.SpotsDialog;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class TrackingOrder extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -91,7 +66,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracking_ship);
+        setContentView(R.layout.activity_tracking_order);
 
         if (savedInstanceState != null) {
             mLastLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -130,11 +105,12 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                     if (task.isSuccessful()) {
 
                         mLastLocation = (Location) task.getResult();
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        /*mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mLastLocation.getLatitude(),
-                                        mLastLocation.getLongitude()), DEFAULT_ZOOM));
+                                        mLastLocation.getLongitude()), DEFAULT_ZOOM));*/
 
                         LatLng yourLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        //
                         Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.my_location, null);
                         Bitmap bitmap = ((BitmapDrawable) myDrawable).getBitmap();
                         bitmap = Common.scaleBitmap(bitmap, 70, 70);
@@ -147,6 +123,7 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                         String latitude = Common.currentRequest.getLatitude();
                         String longitude = Common.currentRequest.getLongitude();
                         LatLng orderLocation = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                        //
                         myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.box, null);
                         bitmap = ((BitmapDrawable) myDrawable).getBitmap();
                         bitmap = Common.scaleBitmap(bitmap, 70, 70);
@@ -154,6 +131,8 @@ public class TrackingOrder extends FragmentActivity implements OnMapReadyCallbac
                                 .title("Order of " + Common.currentRequest.getPhone())
                                 .position(orderLocation);
                         mMap.addMarker(markerOrder);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                orderLocation, DEFAULT_ZOOM));
 
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.");

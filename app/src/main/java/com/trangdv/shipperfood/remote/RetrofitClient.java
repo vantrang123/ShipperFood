@@ -1,4 +1,4 @@
-package com.trangdv.shipperfood.Remote;
+package com.trangdv.shipperfood.remote;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
