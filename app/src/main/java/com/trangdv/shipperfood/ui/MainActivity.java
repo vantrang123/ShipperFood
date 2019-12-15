@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity
         txtUserName = headerView.findViewById(R.id.tv_username);
         txtUserName.setText(Common.currentShipper.getName());
 
+        Home();
+
     }
     /*public void replace(Fragment fragment) {
         fragmentManager.beginTransaction()
