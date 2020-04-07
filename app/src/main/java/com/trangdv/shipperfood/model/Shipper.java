@@ -2,27 +2,8 @@ package com.trangdv.shipperfood.model;
 
 
 public class Shipper {
-    private String Name;
-    private String Password;
-    private String Phone;
-
-    public Shipper() {
-    }
-
-    public Shipper(String name, String password) {
-        Name = name;
-        Password = password;
-    }
-
-
-    public void setPhone(String phone) {
-        Phone = phone;
-    }
-
-    public String getPhone() {
-
-        return Phone;
-    }
+    private String Name, Address,Password, Phone, Id;
+    private int restaurantId;
 
     public String getName() {
         return Name;
@@ -30,6 +11,14 @@ public class Shipper {
 
     public void setName(String name) {
         Name = name;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
     }
 
     public String getPassword() {
@@ -40,4 +29,27 @@ public class Shipper {
         Password = password;
     }
 
+    public String getPhone() {
+        return Phone;
+    }
+
+    public void setPhone(String phone) {
+        Phone = phone;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        this.Id = id;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
+    }
 }

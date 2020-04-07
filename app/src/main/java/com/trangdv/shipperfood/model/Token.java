@@ -1,7 +1,6 @@
 package com.trangdv.shipperfood.model;
 
 public class Token {
-
     public String token;
     public boolean isServerToken;
 

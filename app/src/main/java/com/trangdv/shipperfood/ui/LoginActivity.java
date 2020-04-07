@@ -10,27 +10,36 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.trangdv.shipperfood.R;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Shipper;
+import com.trangdv.shipperfood.presenter.login.ILoginPresenter;
+import com.trangdv.shipperfood.presenter.login.LoginPresenter;
+import com.trangdv.shipperfood.retrofit.IAnNgonAPI;
+import com.trangdv.shipperfood.retrofit.RetrofitClient;
+import com.trangdv.shipperfood.utils.DialogUtils;
 import com.trangdv.shipperfood.utils.SharedPrefs;
+import com.trangdv.shipperfood.view.ILoginView;
+
+import io.reactivex.disposables.CompositeDisposable;
+
+import static com.trangdv.shipperfood.ui.VerifyPhoneActivity.SAVE_SHIPPER;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements ILoginView {
+
+    IAnNgonAPI anNgonAPI;
+    CompositeDisposable compositeDisposable;
+    ILoginPresenter iLoginPresenter;
+
     public static final int REQUEST_CODE = 2019;
     public static final String KEY_PHONENUMBER = "key phonenumber address";
     public static final String KEY_PASSWORD = "key password";
-    public static final String SAVE_USER = "save user";
+    private static final String TAG = "LoginActivity";
 
     private TextView dispatch_signup;
     private EditText edt_phonenumber;
@@ -40,19 +49,21 @@ public class LoginActivity extends AppCompatActivity {
     private String phonenumber;
     private String password;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference table_user = database.getReference("Shippers");
+    DialogUtils dialogUtils;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        inits();
+        init();
     }
 
-    private void inits() {
-
+    private void init() {
+        anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
+        compositeDisposable = new CompositeDisposable();
+        iLoginPresenter = new LoginPresenter(this, anNgonAPI, compositeDisposable);
+        dialogUtils = new DialogUtils();
 
         dispatch_signup = findViewById(R.id.dispatch_signup);
         setClickDispatchSignup();
@@ -60,21 +71,22 @@ public class LoginActivity extends AppCompatActivity {
         setOnClickFab();
         edt_phonenumber = findViewById(R.id.phonenumber_edt_login);
         edt_password = findViewById(R.id.password_edt_login);
-
     }
 
     private void setClickDispatchSignup() {
         dispatch_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DispatchSignup();
+                dispatchSignup();
             }
         });
     }
 
-    private void DispatchSignup() {
+    private void dispatchSignup() {
+        dialogUtils.showProgress(this);
         Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
+//        startActivityForResult(intent, REQUEST_CODE);
+        startActivity(intent);
     }
 
     @Override
@@ -96,7 +108,8 @@ public class LoginActivity extends AppCompatActivity {
                 getTextfromEdt();
 
                 if (phonenumber.equals("")==false && password.equals("")==false) {
-                    authLogin();
+                    dialogUtils.showProgress(LoginActivity.this);
+                    iLoginPresenter.onLogin(phonenumber, password);
                 }
 
             }
@@ -108,40 +121,8 @@ public class LoginActivity extends AppCompatActivity {
         password = edt_password.getText().toString();
     }
 
-    private void authLogin() {
-        table_user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //check if user not exist in database
-                if (dataSnapshot.child(phonenumber).exists()) {
-                    Shipper shipper = dataSnapshot.child(phonenumber).getValue(Shipper.class);
-                    shipper.setPhone(phonenumber);
-
-                    if (shipper.getPassword().equals(password)) {
-                        SharedPrefs.getInstance().put(SplashActivity.CHECK_ALREADLY_LOGIN, 1);
-
-                        //save shipper in share pref
-                        SharedPrefs.getInstance().put(SAVE_USER, shipper);
-                        intoHome(shipper);
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Wrong Password !", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(LoginActivity.this, "Shipper not exist in Database !", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void intoHome(Shipper shipper) {
+    private void gotoMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        Common.currentShipper = shipper;
 
         startActivity(intent);
         finish();
@@ -152,6 +133,17 @@ public class LoginActivity extends AppCompatActivity {
         edt_password.setText(password);
     }
 
+    @Override
+    protected void onStop() {
+        dialogUtils.dismissProgress();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
+    }
 
     //
     @Override
@@ -161,5 +153,25 @@ public class LoginActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public void onLoginSuccess(Shipper user) {
+        dialogUtils.dismissProgress();
+        // save curreentUser
+        Common.currentShipper = user;
+
+        SharedPrefs.getInstance().put(SplashActivity.CHECK_ALREADLY_LOGIN, 2);
+
+        //save user in share pref
+        SharedPrefs.getInstance().put(SAVE_SHIPPER, Common.currentShipper);
+
+        gotoMainActivity();
+    }
+
+    @Override
+    public void onLoginError(String message) {
+        Toast.makeText(this, "[ERROR]" + message, Toast.LENGTH_SHORT).show();
+        dialogUtils.dismissProgress();
     }
 }

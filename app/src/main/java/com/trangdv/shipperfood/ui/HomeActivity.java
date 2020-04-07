@@ -40,7 +40,7 @@ import com.trangdv.shipperfood.viewholder.OrderViewHolder;
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
 
-    FusedLocationProviderClient fusedLocationProviderClient;
+    /*FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
     LocationRequest locationRequest;
     Location mLastLocation;
@@ -209,6 +209,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadAllOrderNeedShip(Common.currentShipper.getPhone());
-    }
+    }*/
 
 }

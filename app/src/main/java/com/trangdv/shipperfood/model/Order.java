@@ -1,51 +1,107 @@
 package com.trangdv.shipperfood.model;
 
+import java.util.Date;
+
 public class Order {
-    private String ProductId;
-    private String ProductName;
-    private String Quantity;
-    private String Price;
+    private String orderPhone, orderName, orderAddress, transactionId, orderFBID;
+    private Date orderDate;
+    private boolean cod;
+    private Double totalPrice;
+    private int orderId, orderStatus, numOfItem, restaurantId;
 
-    public Order(){
-
+    public String getOrderFBID() {
+        return orderFBID;
     }
 
-    public Order(String productId, String productName, String quantity, String price, String image) {
-        ProductId = productId;
-        ProductName = productName;
-        Quantity = quantity;
-        Price = price;
+    public void setOrderFBID(String orderFBID) {
+        this.orderFBID = orderFBID;
     }
 
-    public String getProductId() {
-        return ProductId;
+    public String getOrderPhone() {
+        return orderPhone;
     }
 
-    public void setProductId(String productId) {
-        ProductId = productId;
+    public void setOrderPhone(String orderPhone) {
+        this.orderPhone = orderPhone;
     }
 
-    public String getProductName() {
-        return ProductName;
+    public String getOrderName() {
+        return orderName;
     }
 
-    public void setProductName(String productName) {
-        ProductName = productName;
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
-    public String getQuantity() {
-        return Quantity;
+    public String getOrderAddress() {
+        return orderAddress;
     }
 
-    public void setQuantity(String quantity) {
-        Quantity = quantity;
+    public void setOrderAddress(String orderAddress) {
+        this.orderAddress = orderAddress;
     }
 
-    public String getPrice() {
-        return Price;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setPrice(String price) {
-        Price = price;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public boolean isCod() {
+        return cod;
+    }
+
+    public void setCod(boolean cod) {
+        this.cod = cod;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public int getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(int orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public int getNumOfItem() {
+        return numOfItem;
+    }
+
+    public void setNumOfItem(int numOfItem) {
+        this.numOfItem = numOfItem;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

@@ -103,9 +103,6 @@ public class HomeFragment extends Fragment {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
         }
 
-        // load data
-        loadAllOrderNeedShip(Common.currentShipper.getPhone());
-
     }
 
     @Override
@@ -116,7 +113,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadAllOrderNeedShip(Common.currentShipper.getPhone());
+
     }
 
     @Override
@@ -178,50 +175,4 @@ public class HomeFragment extends Fragment {
         tokens.child(Common.currentShipper.getPhone()).setValue(data);
     }
 
-    private void loadAllOrderNeedShip(String phone) {
-
-        DatabaseReference orderInChildofShipper = shipperOrders.child(phone);
-        FirebaseRecyclerOptions<Request> listOrders = new FirebaseRecyclerOptions.Builder<Request>()
-                .setQuery(orderInChildofShipper, Request.class)
-                .build();
-
-        adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(listOrders) {
-            @Override
-            protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, final int position, @NonNull final Request model) {
-                viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
-                viewHolder.txtOrderPhone.setText(model.getPhone());
-                viewHolder.txtOrderAddress.setText(model.getAddress());
-                viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
-                viewHolder.txtOrderDate.setText(Common.getDate(Long.parseLong(adapter.getRef(position).getKey())));
-                viewHolder.txtOrderName.setText(model.getName());
-                viewHolder.txtOrderPrice.setText(model.getTotal());
-
-                viewHolder.btnShipping.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Common.createShippingOrder(adapter.getRef(position).getKey(),
-                                Common.currentShipper.getPhone(),
-                                mLastLocation);
-                        Common.currentRequest = model;
-                        Common.currentKey = adapter.getRef(position).getKey();
-
-                        startActivity(new Intent(getActivity(), TrackingOrder.class));
-                        //Toast.makeText(getContext(), "ok", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @NonNull
-            @Override
-            public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.order_view_layout, parent, false);
-                return new OrderViewHolder(itemView);
-            }
-        };
-
-        adapter.startListening();
-        adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
-    }
 }

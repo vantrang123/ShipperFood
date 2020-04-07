@@ -1,6 +1,10 @@
 package com.trangdv.shipperfood.ui;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,28 +15,44 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.navigation.NavigationView;
+import com.trangdv.shipperfood.AppConstants;
 import com.trangdv.shipperfood.R;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Shipper;
+import com.trangdv.shipperfood.utils.DialogUtils;
 import com.trangdv.shipperfood.utils.SharedPrefs;
 
-import static com.trangdv.shipperfood.ui.LoginActivity.SAVE_USER;
+import static com.trangdv.shipperfood.ui.VerifyPhoneActivity.SAVE_SHIPPER;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
     FragmentManager fragmentManager;
     Toolbar toolbar;
     private TextView txtUserName;
     String sFragment = "";
+    public boolean isGPS = false;
+    public boolean isContinue = false;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    private double wayLatitude = 0.0, wayLongitude = 0.0;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    DialogUtils dialogUtils;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,34 +72,102 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //get user from share pref
-        Shipper shipper = SharedPrefs.getInstance().get(SAVE_USER, Shipper.class);
+        Shipper shipper = SharedPrefs.getInstance().get(SAVE_SHIPPER, Shipper.class);
         Common.currentShipper = shipper;
 
         final View headerView = navigationView.getHeaderView(0);
         txtUserName = headerView.findViewById(R.id.tv_username);
         txtUserName.setText(Common.currentShipper.getName());
 
+        init();
+
         Home();
 
     }
-    /*public void replace(Fragment fragment) {
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
-    }*/
+
+    private void init() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10 * 1000); // 10 seconds
+        locationRequest.setFastestInterval(5 * 1000); // 5 seconds
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        wayLatitude = location.getLatitude();
+                        wayLongitude = location.getLongitude();
+                        if (!isContinue) {
+                            if (getFragmentCurrent() instanceof RestaurantFragment) {
+                                ((RestaurantFragment) getFragmentCurrent()).requestNearbyRestaurant(wayLatitude, wayLongitude);
+                            }
+
+                        } else {
+                            Toast.makeText(MainActivity.this, "THREE " + wayLatitude + "," + wayLongitude, Toast.LENGTH_LONG).show();
+                        }
+                        if (!isContinue && mFusedLocationClient != null) {
+                            mFusedLocationClient.removeLocationUpdates(locationCallback);
+                        }
+                    }
+                }
+            }
+        };
+
+        dialogUtils = new DialogUtils();
+    }
 
     public void Home() {
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
+                .replace(R.id.fragment_container, new RestaurantFragment())
                 .commit();
     }
 
+    public void addFragment(Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
     public void OrderStatus() {
         /*fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new OrderStatusFragment())
                 .commit();*/
+    }
+
+    public void getLocation() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    AppConstants.LOCATION_REQUEST);
+
+        } else {
+            if (isContinue) {
+                mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+            } else {
+                mFusedLocationClient.getLastLocation().addOnSuccessListener(MainActivity.this, location -> {
+                    if (location != null) {
+                        wayLatitude = location.getLatitude();
+                        wayLongitude = location.getLongitude();
+                        if (getFragmentCurrent() instanceof RestaurantFragment) {
+                            ((RestaurantFragment) getFragmentCurrent()).requestNearbyRestaurant(wayLatitude, wayLongitude);
+                        }
+                    } else {
+                        mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+                    }
+                });
+            }
+        }
+    }
+
+    public Fragment getFragmentCurrent() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     @Override
@@ -142,5 +230,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == AppConstants.GPS_REQUEST) {
+                isContinue = false;
+                getLocation();
+            }
+        }
+    }
 
+    @Override
+    protected void onStop() {
+        dialogUtils.dismissProgress();
+        super.onStop();
+    }
 }
