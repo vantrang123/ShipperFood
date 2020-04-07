@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dimens_10"
+    android:paddingTop="20dp">
+
+    <ImageView
+        android:id="@+id/iv_registation_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_iv_status_grey"
+        android:src="@drawable/ic_send"
+        android:tint="@color/colorWhite"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/txt_registration_order"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_registation_order"
+        app:layout_constraintLeft_toRightOf="@id/iv_registation_order"
+        app:layout_constraintTop_toTopOf="@id/iv_registation_order" />
+
+    <include
+        android:id="@+id/line1"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/iv_accepted"
+        app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
+        app:layout_constraintRight_toRightOf="@id/iv_registation_order"
+        app:layout_constraintTop_toBottomOf="@id/iv_registation_order" />
+
+    <ImageView
+        android:id="@+id/iv_accepted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_iv_status_grey"
+        android:src="@drawable/ic_order_placed"
+        android:tint="@color/colorWhite"
+        app:layout_constraintBottom_toTopOf="@id/line2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/txt_accepted"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_accepted"
+        app:layout_constraintLeft_toRightOf="@id/iv_accepted"
+        app:layout_constraintTop_toTopOf="@id/iv_accepted" />
+
+    <include
+        android:id="@+id/line2"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/iv_shipping"
+        app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
+        app:layout_constraintRight_toRightOf="@id/iv_registation_order"
+        app:layout_constraintTop_toBottomOf="@id/iv_accepted" />
+
+    <ImageView
+        android:id="@+id/iv_shipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_iv_status_grey"
+        android:src="@drawable/ic_shipping"
+        android:tint="@color/colorWhite"
+        app:layout_constraintBottom_toTopOf="@id/line3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/txt_shipping"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_shipping"
+        app:layout_constraintLeft_toRightOf="@id/iv_shipping"
+        app:layout_constraintTop_toTopOf="@id/iv_shipping" />
+
+    <include
+        android:id="@+id/line3"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/iv_shipped"
+        app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
+        app:layout_constraintRight_toRightOf="@id/iv_registation_order"
+        app:layout_constraintTop_toBottomOf="@id/iv_shipping" />
+
+    <ImageView
+        android:id="@+id/iv_shipped"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_iv_status_grey"
+        android:src="@drawable/ic_menu_home"
+        android:tint="@color/colorWhite"
+        app:layout_constraintBottom_toTopOf="@id/line4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/txt_shipped"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_shipped"
+        app:layout_constraintLeft_toRightOf="@id/iv_shipped"
+        app:layout_constraintTop_toTopOf="@id/iv_shipped" />
+
+    <include
+        android:id="@+id/line4"
+        layout="@layout/layout_horizontal_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/iv_cancel"
+        app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
+        app:layout_constraintRight_toRightOf="@id/iv_registation_order"
+        app:layout_constraintTop_toBottomOf="@id/iv_shipped" />
+
+    <ImageView
+        android:id="@+id/iv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_iv_status_grey"
+        android:src="@drawable/ic_menu_home"
+        android:tint="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line4" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/txt_cancel"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
+        app:layout_constraintLeft_toRightOf="@id/iv_cancel"
+        app:layout_constraintTop_toTopOf="@id/iv_cancel" />
+
+    <!--<TextView
+        android:id="@+id/tv_update_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/bg_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/txt_update"/>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

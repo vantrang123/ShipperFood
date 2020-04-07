@@ -14,9 +14,9 @@
           <androidx.appcompat.widget.Toolbar
               android:id="@+id/toolbar"
               android:layout_width="match_parent"
-              android:layout_height="?attr/actionBarSize"
+              android:layout_height="50dp"
               app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
-              android:background="?attr/colorPrimary"
+              android:background="@drawable/bg_header"
               app:popupTheme="@style/AppTheme.PopupOverlay"
               app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
