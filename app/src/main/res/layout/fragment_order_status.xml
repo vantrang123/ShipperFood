@@ -30,9 +30,10 @@
     <include
         android:id="@+id/line1"
         layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/iv_accepted"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
         app:layout_constraintRight_toRightOf="@id/iv_registation_order"
         app:layout_constraintTop_toBottomOf="@id/iv_registation_order" />
@@ -62,7 +63,7 @@
     <include
         android:id="@+id/line2"
         layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/iv_shipping"
         app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
@@ -94,7 +95,7 @@
     <include
         android:id="@+id/line3"
         layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/iv_shipped"
         app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"
@@ -126,7 +127,7 @@
     <include
         android:id="@+id/line4"
         layout="@layout/layout_horizontal_line"
-        android:layout_width="0dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/iv_cancel"
         app:layout_constraintLeft_toLeftOf="@id/iv_registation_order"

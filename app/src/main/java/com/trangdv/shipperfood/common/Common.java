@@ -49,7 +49,7 @@ public class Common {
     public static Shipper currentShipper;
     public static Request currentRequest;
     public static Order currentOrder;
-    public static String currentKey;
+    public static String currentOrderFBID;
     public static int curentRestaurantId;
 
     public static final String baseURL = "https://maps.googleapis.com/";

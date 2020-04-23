@@ -119,8 +119,10 @@ public class OrderNeedShipActivity extends AppCompatActivity implements IOrderNe
         dialogUtils.showProgress(this);
         Intent intent = new Intent(this, OrderDetailActivity.class);
         Bundle bundle = new Bundle();
-        if (shippingOrderList != null)
+        if (shippingOrderList != null && shippingOrderList.get(position).getOrderId() == orderList.get(position).getOrderId())
             bundle.putInt("Status" ,shippingOrderList.get(position).getShippingStatus());
+        else
+            bundle.putInt("Status" ,0);
         intent.putExtras(bundle);
         Common.currentOrder = orderList.get(position);
         startActivity(intent);

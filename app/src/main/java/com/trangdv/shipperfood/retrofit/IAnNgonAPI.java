@@ -6,6 +6,7 @@ import com.trangdv.shipperfood.model.RestaurantModel;
 import com.trangdv.shipperfood.model.ShipperModel;
 import com.trangdv.shipperfood.model.ShippingOrderModel;
 import com.trangdv.shipperfood.model.TokenModel;
+import com.trangdv.shipperfood.model.UpdateOrderModel;
 import com.trangdv.shipperfood.model.UpdateShipperModel;
 
 import io.reactivex.Observable;
@@ -69,6 +70,12 @@ public interface IAnNgonAPI {
                                                     @Field("restaurantId") int restaurantId,
                                                     @Field("shipperId") String shipperId,
                                                     @Field("status") int status);
+
+    @PUT("updateOrder")
+    @FormUrlEncoded
+    Observable<UpdateOrderModel> updateOrderStatus(@Field("key") String apiKey,
+                                                   @Field("orderId") int orderId,
+                                                   @Field("orderStatus") int orderStatus);
 
     /*@PUT("updatemenu")
     @FormUrlEncoded

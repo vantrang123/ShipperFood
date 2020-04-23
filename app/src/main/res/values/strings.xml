@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShipperFood</string>
+    <string name="app_name">OF Shipper</string>
     <string name="sologan">Đừng bỏ bữa, bạn nhé!</string>
     <string name="text_login">Login</string>
     <string name="text_signup">Signup</string>
@@ -28,7 +28,7 @@
     <string name="title_dialog_location_error">Quyền truy cập vị trí bị từ chối</string>
     <string name="content_dialog_location_error">Bạn nên mở dịch vụ truy cập vị trí cho ứng dụng để hiển thị địa điểm lân cận</string>
     <string name="txt_registration_order">Đăng ký</string>
-    <string name="txt_accepted">Đã chấp nhận</string>
+    <string name="txt_accepted">Đã được chấp nhận</string>
     <string name="txt_shipped">Đã giao</string>
     <string name="txt_shipping">Đang giao</string>
     <string name="txt_cancel">Hủy</string>
