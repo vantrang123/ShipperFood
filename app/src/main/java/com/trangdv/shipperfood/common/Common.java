@@ -1,5 +1,6 @@
 package com.trangdv.shipperfood.common;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -60,16 +61,20 @@ public class Common {
 
     public static String convertCodeToStatus(int code) {
         switch (code) {
-            case 0:
-                return "Đã đặt";
             case 1:
+            case 0:
+                return "Cần giao";
+            case 4:
                 return "Đang giao";
-            case 2:
+            case 5:
                 return "Đã giao";
+            case 2:
+            case 3:
+                return "Đã chấp nhận";
             case -1:
                 return "Đã hủy";
             default:
-                return "Đã hủy";
+                return "";
         }
     }
 
@@ -134,5 +139,14 @@ public class Common {
 
     public static String createTopicSender(String topicChannel) {
         return new StringBuilder("/topics/").append(topicChannel).toString();
+    }
+
+    public static void animateStart(Context context) {
+        Activity act = (Activity)context;
+        act.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+    public static void animateFinish(Context context) {
+        Activity act = (Activity)context;
+        act.overridePendingTransition(0, R.anim.right_to_left);
     }
 }

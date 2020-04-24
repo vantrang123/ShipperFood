@@ -1,5 +1,6 @@
 package com.trangdv.shipperfood.retrofit;
 
+import com.trangdv.shipperfood.model.MaxOrderModel;
 import com.trangdv.shipperfood.model.OrderDetailModel;
 import com.trangdv.shipperfood.model.OrderModel;
 import com.trangdv.shipperfood.model.RestaurantModel;
@@ -63,6 +64,10 @@ public interface IAnNgonAPI {
                                                     @Query("restaurantId") int restaurantId,
                                                     @Query("shipperId") String shipperId);
 
+    @GET("orderofshipper")
+    Observable<OrderModel> getOrderOfShipper(@Query("key") String apiKey,
+                                                    @Query("shipperId") String shipperId);
+
     @POST("shippingorder")
     @FormUrlEncoded
     Observable<ShippingOrderModel> setShippingOrder(@Field("key") String apiKey,
@@ -76,6 +81,7 @@ public interface IAnNgonAPI {
     Observable<UpdateOrderModel> updateOrderStatus(@Field("key") String apiKey,
                                                    @Field("orderId") int orderId,
                                                    @Field("orderStatus") int orderStatus);
+
 
     /*@PUT("updatemenu")
     @FormUrlEncoded

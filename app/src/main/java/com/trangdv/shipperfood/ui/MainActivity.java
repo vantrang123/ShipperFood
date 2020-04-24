@@ -128,17 +128,9 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    public void addFragment(Fragment fragment) {
-        fragmentManager.beginTransaction()
-                .add(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    public void OrderStatus() {
-        /*fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, new OrderStatusFragment())
-                .commit();*/
+    public void Orders() {
+        startActivity(new Intent(this, OrderActivity.class));
+        Common.animateStart(this);
     }
 
     public void getLocation() {
@@ -209,12 +201,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_home:
 //                transaction.hide(getSupportFragmentManager().findFragmentById(R.id.fragment_container));
                 Home();
-                Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.nav_location:
-                OrderStatus();
-                Toast.makeText(MainActivity.this, "Location", Toast.LENGTH_SHORT).show();
+            case R.id.nav_order:
+                Orders();
                 break;
 
             case R.id.nav_exit:
@@ -245,5 +235,12 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         dialogUtils.dismissProgress();
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 }

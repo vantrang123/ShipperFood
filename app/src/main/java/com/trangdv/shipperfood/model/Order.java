@@ -7,7 +7,7 @@ public class Order {
     private Date orderDate;
     private boolean cod;
     private Double totalPrice;
-    private int orderId, orderStatus, numOfItem, restaurantId;
+    private int orderId, orderStatus, restaurantId, numOfItem;
 
     public String getOrderFBID() {
         return orderFBID;
@@ -89,19 +89,19 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public int getNumOfItem() {
-        return numOfItem;
-    }
-
-    public void setNumOfItem(int numOfItem) {
-        this.numOfItem = numOfItem;
-    }
-
     public int getRestaurantId() {
         return restaurantId;
     }
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public int getNumOfItem() {
+        return numOfItem;
+    }
+
+    public void setNumOfItem(int numOfItem) {
+        this.numOfItem = numOfItem;
     }
 }

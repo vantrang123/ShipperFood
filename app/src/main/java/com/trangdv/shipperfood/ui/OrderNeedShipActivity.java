@@ -70,9 +70,7 @@ public class OrderNeedShipActivity extends AppCompatActivity implements IOrderNe
         rvNeedShip.setAdapter(needShippAdapter);
 
         swrRestaurant.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
+                android.R.color.holo_orange_dark);
         swrRestaurant.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -119,7 +117,7 @@ public class OrderNeedShipActivity extends AppCompatActivity implements IOrderNe
         dialogUtils.showProgress(this);
         Intent intent = new Intent(this, OrderDetailActivity.class);
         Bundle bundle = new Bundle();
-        if (shippingOrderList != null && shippingOrderList.get(position).getOrderId() == orderList.get(position).getOrderId())
+        if (shippingOrderList.size() == orderList.size() && shippingOrderList.get(position).getOrderId() == orderList.get(position).getOrderId())
             bundle.putInt("Status" ,shippingOrderList.get(position).getShippingStatus());
         else
             bundle.putInt("Status" ,0);
@@ -132,5 +130,11 @@ public class OrderNeedShipActivity extends AppCompatActivity implements IOrderNe
     protected void onStop() {
         dialogUtils.dismissProgress();
         super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Common.animateFinish(this);
     }
 }

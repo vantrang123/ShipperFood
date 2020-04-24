@@ -120,6 +120,7 @@ public class RestaurantFragment extends Fragment implements RestaurantAdapter.It
     public void dispatchToOrderNeedShip(int position) {
         Common.curentRestaurantId = restaurantList.get(position).getId();
         startActivity(new Intent(getContext(), OrderNeedShipActivity.class));
+        Common.animateStart(getContext());
     }
 
     @Override

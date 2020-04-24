@@ -25,10 +25,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -67,6 +67,10 @@
         <activity android:name=".ui.HomeActivity" />
         <activity
             android:name=".ui.OrderNeedShipActivity"
+            android:theme="@style/AppTheme.GradientStatusBar" />
+
+        <activity
+            android:name=".ui.OrderActivity"
             android:theme="@style/AppTheme.GradientStatusBar" />
         <activity
             android:name=".ui.TrackingOrder"

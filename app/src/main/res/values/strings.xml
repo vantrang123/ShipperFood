@@ -30,6 +30,7 @@
     <string name="txt_registration_order">Đăng ký</string>
     <string name="txt_accepted">Đã được chấp nhận</string>
     <string name="txt_shipped">Đã giao</string>
+    <string name="txt_order_list">Danh sách đơn hàng</string>
     <string name="txt_shipping">Đang giao</string>
     <string name="txt_cancel">Hủy</string>
     <string name="txt_order_detail">Chi tiết đơn hàng</string>
