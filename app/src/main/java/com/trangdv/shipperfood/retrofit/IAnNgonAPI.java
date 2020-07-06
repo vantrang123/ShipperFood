@@ -82,6 +82,9 @@ public interface IAnNgonAPI {
                                                    @Field("orderId") int orderId,
                                                    @Field("orderStatus") int orderStatus);
 
+    @GET("restaurant")
+    Observable<RestaurantModel> getRestaurant(@Query("key") String apiKey);
+
 
     /*@PUT("updatemenu")
     @FormUrlEncoded

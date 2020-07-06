@@ -4,7 +4,8 @@ import java.util.Date;
 
 public class Order {
     private String orderPhone, orderName, orderAddress, transactionId, orderFBID;
-    private Date orderDate;
+    private String lat, lng;
+    private String orderDate;
     private boolean cod;
     private Double totalPrice;
     private int orderId, orderStatus, restaurantId, numOfItem;
@@ -49,11 +50,11 @@ public class Order {
         this.transactionId = transactionId;
     }
 
-    public Date getOrderDate() {
+    public String getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -103,5 +104,22 @@ public class Order {
 
     public void setNumOfItem(int numOfItem) {
         this.numOfItem = numOfItem;
+    }
+
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

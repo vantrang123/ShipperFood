@@ -1,6 +1,9 @@
 package com.trangdv.shipperfood.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +24,11 @@ public class NeedShippAdapter extends RecyclerView.Adapter<NeedShippAdapter.View
     private Context context;
     private List<Order> orderList = new ArrayList<>();
     private ItemListener itemListener;
-    private SimpleDateFormat simpleDateFormat;
 
     public NeedShippAdapter(Context context, List<Order> orders, ItemListener itemListener) {
         this.context = context;
         this.orderList = orders;
         this.itemListener = itemListener;
-        simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     }
 
     @NonNull
@@ -44,20 +45,66 @@ public class NeedShippAdapter extends RecyclerView.Adapter<NeedShippAdapter.View
     }
 
     private void bindView(ViewHolder holder, int position) {
-        holder.tvOrderId.setText(new StringBuilder("#").append(orderList.get(position).getOrderId()));
+        Order order = orderList.get(position);
+        holder.tvOrderId.setText(new StringBuilder("#").append(order.getOrderId()));
 //        holder.tvOrderNumOfItem.setText(new StringBuilder(String.valueOf(orderList.get(position).getNumOfItem())));
-        holder.tvOrderAddres.setText(new StringBuilder(orderList.get(position).getOrderAddress()));
-        holder.tvOrderPhone.setText(new StringBuilder(orderList.get(position).getOrderPhone()));
-        holder.tvOrderPrice.setText(new StringBuilder(String.valueOf(orderList.get(position).getTotalPrice())));
-        holder.tvOrerDate.setText(new StringBuilder(simpleDateFormat.format(orderList.get(position).getOrderDate())));
-        holder.tvOrderNumOfItem.setText(new StringBuilder(String.valueOf(orderList.get(position).getNumOfItem())));
-        holder.tvOrderStatus.setText(Common.convertCodeToStatus(orderList.get(position).getOrderStatus()));
+        holder.tvOrderAddres.setText(new StringBuilder(order.getOrderAddress()));
+        holder.tvOrderPhone.setText(new StringBuilder(order.getOrderPhone()));
+        holder.tvOrderPrice.setText(new StringBuilder(String.valueOf(order.getTotalPrice())));
+        holder.tvOrerDate.setText(order.getOrderDate());
+        holder.tvOrderNumOfItem.setText(new StringBuilder(String.valueOf(order.getNumOfItem())));
+        holder.tvOrderStatus.setText(Common.convertCodeToStatus(order.getOrderStatus()));
 
-        if (orderList.get(position).isCod()) {
+        if (order.isCod()) {
             holder.tvOrderCod.setText(new StringBuilder("Cash On Delivery"));
         } else {
-            holder.tvOrderCod.setText(new StringBuilder("TransID: ").append(orderList.get(position).getTransactionId()));
+            holder.tvOrderCod.setText(new StringBuilder("TransID: ").append(order.getTransactionId()));
         }
+
+        holder.tvOrderAddres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent;
+                if (!TextUtils.isEmpty(order.getLat())) {
+                    mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+order.getLat()+","+order.getLng()));
+
+                }
+                else {
+                    Uri gmmIntentUri;
+                    try {
+                        String[] split = order.getOrderAddress().split(",");
+                        String house_number = split[0];
+                        String street_names = split[1];
+                        String city = split[2];
+                        gmmIntentUri = Uri.parse("google.navigation:q="+house_number+street_names+city);
+                    } catch (Exception e) {
+                        gmmIntentUri = Uri.parse("google.navigation:q="+order.getOrderAddress());
+                    }
+
+                    mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                }
+
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                    context.startActivity(mapIntent);
+                }
+            }
+        });
+
+        holder.tvOrderDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Common.currentOrder = order;
+                itemListener.dispatchToOrderDetail(position);
+            }
+        });
+
+        holder.tvInfoRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemListener.openRestaurantDetail();
+            }
+        });
 
     }
 
@@ -67,7 +114,8 @@ public class NeedShippAdapter extends RecyclerView.Adapter<NeedShippAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvOrderId, tvOrderStatus, tvOrderPhone, tvOrderAddres, tvOrderCod, tvOrerDate, tvOrderPrice, tvOrderNumOfItem;
+        public TextView tvOrderId, tvOrderStatus, tvOrderPhone, tvOrderAddres, tvOrderCod,
+                tvOrerDate, tvOrderPrice, tvOrderNumOfItem, tvInfoRestaurant, tvOrderDetail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,17 +127,13 @@ public class NeedShippAdapter extends RecyclerView.Adapter<NeedShippAdapter.View
             tvOrerDate = itemView.findViewById(R.id.tv_order_date);
             tvOrderPrice = itemView.findViewById(R.id.tv_order_price);
             tvOrderNumOfItem = itemView.findViewById(R.id.tv_order_num_of_item);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    itemListener.dispatchToOrderDetail(getAdapterPosition());
-                }
-            });
+            tvInfoRestaurant = itemView.findViewById(R.id.tv_info_restaurnt);
+            tvOrderDetail = itemView.findViewById(R.id.tv_order_detail);
         }
     }
 
     public interface ItemListener {
         void dispatchToOrderDetail(int position);
+        void openRestaurantDetail();
     }
 }

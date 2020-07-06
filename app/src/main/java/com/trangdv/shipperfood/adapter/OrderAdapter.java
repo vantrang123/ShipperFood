@@ -1,6 +1,8 @@
 package com.trangdv.shipperfood.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trangdv.shipperfood.R;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Order;
+import com.trangdv.shipperfood.ui.dialog.RestaurantDetailDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,14 +29,12 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<Order> orderList = new ArrayList<>();
     Context context;
     ItemListener listener;
-    SimpleDateFormat simpleDateFormat;
 
     public OrderAdapter(Context context, List<Order> requests, ItemListener itemListener) {
         super();
         this.context = context;
         this.orderList = requests;
         listener = itemListener;
-        simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     }
 
     public void addItem(List<Order> addedItems) {
@@ -81,13 +82,47 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
             ViewHolder viewHolder = (ViewHolder) holder;
-            viewHolder.tvOrderNumOfItem.setText(new StringBuilder(String.valueOf(orderList.get(position).getNumOfItem())));
-            viewHolder.tvOrderAddres.setText(new StringBuilder(orderList.get(position).getOrderAddress()));
-            viewHolder.tvOrderPhone.setText(new StringBuilder(orderList.get(position).getOrderPhone()));
-            viewHolder.tvOrderPrice.setText(new StringBuilder(String.valueOf(orderList.get(position).getTotalPrice())));
-            viewHolder.tvOrerDate.setText(new StringBuilder(simpleDateFormat.format(orderList.get(position).getOrderDate())));
-            viewHolder.tvOrderId.setText(new StringBuilder("#").append(String.valueOf(orderList.get(position).getOrderId())));
-            viewHolder.tvOrderStatus.setText(Common.convertCodeToStatus(orderList.get(position).getOrderStatus()));
+            Order order = orderList.get(position);
+            viewHolder.tvOrderNumOfItem.setText(new StringBuilder(String.valueOf(order.getNumOfItem())));
+            viewHolder.tvOrderAddres.setText(new StringBuilder(order.getOrderAddress()));
+            viewHolder.tvOrderPhone.setText(new StringBuilder(order.getOrderPhone()));
+            viewHolder.tvOrderPrice.setText(new StringBuilder(String.valueOf(order.getTotalPrice())));
+            viewHolder.tvOrerDate.setText(order.getOrderDate());
+            viewHolder.tvOrderId.setText(new StringBuilder("#").append((order.getOrderId())));
+            viewHolder.tvOrderStatus.setText(Common.convertCodeToStatus(order.getOrderStatus()));
+
+            viewHolder.tvOrderPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callPhone(order.getOrderPhone());
+                }
+            });
+
+            viewHolder.tvOrderAddres.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+order.getLat()+","+order.getLng()));
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(mapIntent);
+                    }
+                }
+            });
+
+            viewHolder.tvOrderDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Common.currentOrder = orderList.get(position);
+                    listener.dispatchToOrderDetail(position);
+                }
+            });
+
+            viewHolder.tvInfoRestaurant.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.openRestaurantDetail();
+                }
+            });
 
             if (orderList.get(position).isCod()) {
                 viewHolder.tvOrderCod.setText(new StringBuilder("Cash On Delivery"));
@@ -100,13 +135,18 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    private void callPhone(String orderPhone) {
+        context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(orderPhone))));
+    }
+
     @Override
     public int getItemCount() {
         return orderList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvOrderId, tvOrderStatus, tvOrderPhone, tvOrderAddres, tvOrderCod, tvOrerDate, tvOrderPrice, tvOrderNumOfItem;
+        public TextView tvOrderId, tvOrderStatus, tvOrderPhone, tvOrderAddres, tvOrderCod,
+                tvOrerDate, tvOrderPrice, tvOrderNumOfItem, tvInfoRestaurant, tvOrderDetail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,14 +158,9 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tvOrerDate = itemView.findViewById(R.id.tv_order_date);
             tvOrderPrice = itemView.findViewById(R.id.tv_order_price);
             tvOrderNumOfItem = itemView.findViewById(R.id.tv_order_num_of_item);
+            tvInfoRestaurant = itemView.findViewById(R.id.tv_info_restaurnt);
+            tvOrderDetail = itemView.findViewById(R.id.tv_order_detail);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Common.currentOrder = orderList.get(getLayoutPosition());
-                    listener.dispatchToOrderDetail(getLayoutPosition());
-                }
-            });
         }
     }
 
@@ -140,5 +175,6 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface ItemListener {
         void dispatchToOrderDetail(int position);
+        void openRestaurantDetail();
     }
 }

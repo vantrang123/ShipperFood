@@ -40,7 +40,8 @@ public class Common {
     public static final String SHIPPER_INFO_TABLE = "ShippingOrders";
     public static final int REQUEST_CODE = 1000;
     public static final String API_KEY = "1234";
-    public static final String API_ANNGON_ENDPOINT = "http://192.168.137.1:3000";
+//    public static final String API_ANNGON_ENDPOINT = "http://192.168.43.205:3000";
+    public static final String API_ANNGON_ENDPOINT = "http://192.168.1.7:3000";
     public static final String fcmUrl = "https://fcm.googleapis.com/";
     public static final String NOTIFI_TITLE = "title";
     public static final String NOTIFI_CONTENT = "content";
@@ -69,6 +70,7 @@ public class Common {
             case 5:
                 return "Đã giao";
             case 2:
+                return " Đăng ký giao";
             case 3:
                 return "Đã chấp nhận";
             case -1:
@@ -103,6 +105,7 @@ public class Common {
 
         builder.setContentTitle(title)
                 .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.app_icon));

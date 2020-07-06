@@ -112,8 +112,10 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
 
     private void sendNotificatonToRestaurant(int i) {
         Map<String, String> dataSend = new HashMap<>();
-        dataSend.put(Common.NOTIFI_TITLE, "Status Order");
-        dataSend.put(Common.NOTIFI_CONTENT, "You have new status order" + " #" +Common.currentOrder.getOrderId());
+        dataSend.put(Common.NOTIFI_TITLE, "Trạng thái đơn hàng");
+        dataSend.put(Common.NOTIFI_CONTENT, "Trạng thái đơn hàng" + " #"
+                + Common.currentOrder.getOrderId()
+                + Common.convertCodeToStatus(statusId));
 
         FCMSendData sendData = new FCMSendData(Common.createTopicSender(
                 Common.getTopicChannel(
@@ -138,10 +140,10 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
                 .subscribe(tokenModel -> {
                             if (tokenModel.isSuccess()) {
                                 Map<String, String> messageSend = new HashMap<>();
-                                messageSend.put(Common.NOTIFI_TITLE, "Your order has been updated");
-                                messageSend.put(Common.NOTIFI_CONTENT, new StringBuilder("Your order ")
+                                messageSend.put(Common.NOTIFI_TITLE, "Trạng thái đơn hàng mới");
+                                messageSend.put(Common.NOTIFI_CONTENT, new StringBuilder("Đơn hàng ")
                                 .append(Common.currentOrder.getOrderId())
-                                .append(" has been update to")
+                                .append(" đã ")
                                 .append(Common.convertCodeToStatus(statusId)).toString());
 
                                 FCMSendData fcmSendData = new FCMSendData(tokenModel.getResult().get(0).getToken(), messageSend);
@@ -193,7 +195,7 @@ public class OrderStatusFragment extends Fragment implements View.OnClickListene
             case 3:
                 ivAccepted.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivAccepted.setClickable(false);
-            case 1:
+            case 2:
                 ivRegistation.setBackground(getResources().getDrawable(R.drawable.bg_iv_status));
                 ivRegistation.setClickable(false);
                 break;

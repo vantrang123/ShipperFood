@@ -68,11 +68,11 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
     }
 
     private void initView() {
-        Date date = Common.currentOrder.getOrderDate();
-        String day          = (String) DateFormat.format("dd",   date); // 20
-        String monthString  = (String) DateFormat.format("MMM",  date); // Jun
+        String date = Common.currentOrder.getOrderDate();
+//        String day          = (String) DateFormat.format("dd",   date); // 20
+//        String monthString  = (String) DateFormat.format("MMM",  date); // Jun
 
-        tvOrderOn.setText(new StringBuilder(day).append(" ").append(monthString));
+        tvOrderOn.setText(date);
         tvOrderNumber.setText(new StringBuffer("#").append(String.valueOf(Common.currentOrder.getOrderId())));
         tvPrice.setText(new StringBuilder(String.valueOf(Common.currentOrder.getTotalPrice())).append("đ"));
     }
@@ -90,20 +90,6 @@ public class OrderDetailActivity extends AppCompatActivity implements OrderItemA
         viewPager.setAdapter(new PagerOrderDetailAdapger(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
     }
-
-    /*private void initStatusSpinner() {
-        List<Status> statusList = new ArrayList<>();
-        statusList.add(new Status(0, "Placed"));
-        statusList.add(new Status(1, "Shipping"));
-        statusList.add(new Status(2, "Shipped"));
-        statusList.add(new Status(-1, "Cancelled"));
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, statusList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        *//*spStatus.setAdapter(arrayAdapter);
-        spStatus.setSelection(Common.convertStatusToIndex(Common.currentOrder.getOrderStatus()));*//*
-
-    }*/
 
     private void findViewById() {
 //        spStatus = findViewById(R.id.status_spinner);

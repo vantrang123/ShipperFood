@@ -72,6 +72,7 @@
         <activity
             android:name=".ui.OrderActivity"
             android:theme="@style/AppTheme.GradientStatusBar" />
+
         <activity
             android:name=".ui.TrackingOrder"
             android:label="Map" />

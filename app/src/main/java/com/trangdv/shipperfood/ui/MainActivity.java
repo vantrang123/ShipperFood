@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -26,13 +27,24 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.trangdv.shipperfood.AppConstants;
 import com.trangdv.shipperfood.R;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Shipper;
+import com.trangdv.shipperfood.retrofit.IAnNgonAPI;
+import com.trangdv.shipperfood.retrofit.RetrofitClient;
 import com.trangdv.shipperfood.utils.DialogUtils;
 import com.trangdv.shipperfood.utils.SharedPrefs;
+
+import io.paperdb.Paper;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.trangdv.shipperfood.ui.VerifyPhoneActivity.SAVE_SHIPPER;
 
@@ -40,6 +52,8 @@ import static com.trangdv.shipperfood.ui.VerifyPhoneActivity.SAVE_SHIPPER;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    IAnNgonAPI anNgonAPI;
+    CompositeDisposable compositeDisposable;
     FragmentManager fragmentManager;
     Toolbar toolbar;
     private TextView txtUserName;
@@ -80,12 +94,16 @@ public class MainActivity extends AppCompatActivity
         txtUserName.setText(Common.currentShipper.getName());
 
         init();
+        refreshToke();
 
         Home();
 
     }
 
     private void init() {
+        anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
+
+        compositeDisposable = new CompositeDisposable();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         locationRequest = LocationRequest.create();
@@ -120,6 +138,27 @@ public class MainActivity extends AppCompatActivity
         };
 
         dialogUtils = new DialogUtils();
+    }
+
+    private void refreshToke() {
+//        Paper.book().write(Common.REMENBER_FBID, Common.currentUser.getFbid());
+        FirebaseInstanceId.getInstance()
+                .getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        compositeDisposable.add(anNgonAPI.updateToken(Common.API_KEY,
+                                Common.currentShipper.getId(),
+                                task.getResult().getToken())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(tokenModel -> {
+                                        }
+                                        , throwable -> {
+                                        }
+                                ));
+                    }
+                });
     }
 
     public void Home() {

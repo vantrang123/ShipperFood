@@ -16,11 +16,13 @@ import com.trangdv.shipperfood.R;
 import com.trangdv.shipperfood.adapter.NeedShippAdapter;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Order;
+import com.trangdv.shipperfood.model.Restaurant;
 import com.trangdv.shipperfood.model.ShippingOrder;
 import com.trangdv.shipperfood.presenter.shippingorder.IOrderNeedShipPresenter;
 import com.trangdv.shipperfood.presenter.shippingorder.OrderNeedShipPresenter;
 import com.trangdv.shipperfood.retrofit.IAnNgonAPI;
 import com.trangdv.shipperfood.retrofit.RetrofitClient;
+import com.trangdv.shipperfood.ui.dialog.RestaurantDetailDialog;
 import com.trangdv.shipperfood.ui.orderdetail.OrderDetailActivity;
 import com.trangdv.shipperfood.utils.DialogUtils;
 import com.trangdv.shipperfood.view.IOrderNeedShipView;
@@ -28,7 +30,9 @@ import com.trangdv.shipperfood.view.IOrderNeedShipView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class OrderNeedShipActivity extends AppCompatActivity implements IOrderNeedShipView, NeedShippAdapter.ItemListener {
     DialogUtils dialogUtils;
@@ -124,6 +128,33 @@ public class OrderNeedShipActivity extends AppCompatActivity implements IOrderNe
         intent.putExtras(bundle);
         Common.currentOrder = orderList.get(position);
         startActivity(intent);
+    }
+
+    @Override
+    public void openRestaurantDetail() {
+        compositeDisposable.add(
+                anNgonAPI.getRestaurant(Common.API_KEY)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(restaurantModel -> {
+                                    if (restaurantModel.isSuccess()) {
+                                        Restaurant restaurant = restaurantModel.getResult().get(0);
+                                        Bundle args = new Bundle();
+                                        args.putString("name", restaurant.getName());
+                                        args.putString("address", restaurant.getAddress());
+                                        args.putString("phone", restaurant.getPhone());
+                                        args.putString("lat", restaurant.getLat().toString());
+                                        args.putString("lng", restaurant.getLng().toString());
+                                        RestaurantDetailDialog dialog = new RestaurantDetailDialog();
+                                        dialog.setArguments(args);
+                                        dialog.show(getSupportFragmentManager(), "restaurant detail dialog");
+                                    }
+                                    dialogUtils.dismissProgress();
+                                },
+                                throwable -> {
+                                    dialogUtils.dismissProgress();
+                                }
+                        ));
     }
 
     @Override

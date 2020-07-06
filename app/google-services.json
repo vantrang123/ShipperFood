@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "57730312644-utgm491jf7n4ejt0hecja32s3eog8d9k.apps.googleusercontent.com",
+          "client_id": "57730312644-7p7uta53d0b9p4pbudg9aek3nao9e5bt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.trangdv.orderfood",
-            "certificate_hash": "68aceea2a283c3bec6e5b6a44f6cdd11bc56736c"
+            "certificate_hash": "6d05be6a45f953f0f048d3f2cff900d3739b297f"
           }
         },
         {
@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAbOZJ_CbitLuQ7_yslJtIRpEAtYg4kjKQ"
+          "current_key": "AIzaSyAMbu7bI4vxOiKOR4s6uRE8hS38itCRa9Q"
         }
       ],
       "services": {
@@ -66,7 +66,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAbOZJ_CbitLuQ7_yslJtIRpEAtYg4kjKQ"
+          "current_key": "AIzaSyAMbu7bI4vxOiKOR4s6uRE8hS38itCRa9Q"
         }
       ],
       "services": {
@@ -89,11 +89,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "57730312644-dkchsb06f39r5hts9a9rbpe6qh392rmo.apps.googleusercontent.com",
+          "client_id": "57730312644-q6scrj25cok27n04ong0hfq8blqp467k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.trangdv.shipperfood",
-            "certificate_hash": "2cddbe26cd597df7bac1d6a2a2a13d66266d1812"
+            "certificate_hash": "6d05be6a45f953f0f048d3f2cff900d3739b297f"
           }
         },
         {
@@ -103,7 +103,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAbOZJ_CbitLuQ7_yslJtIRpEAtYg4kjKQ"
+          "current_key": "AIzaSyAMbu7bI4vxOiKOR4s6uRE8hS38itCRa9Q"
         }
       ],
       "services": {

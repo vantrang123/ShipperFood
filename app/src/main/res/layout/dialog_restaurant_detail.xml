@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/layout_bottomSheetBehavior"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+app:behavior_hideable="true"
+app:behavior_peekHeight="0dp"
+android:background="@drawable/shadow_view_for_dialog"
+app:layout_behavior="@string/bottom_sheet_behavior">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="@dimen/dimens_16"
+    >
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="60dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="10dp"
+        android:padding="17dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_ic_order_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_restaurant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Ăn Ngon Quán"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_line"/>
+
+    <TextView
+        android:id="@+id/tv_restaurant_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ: 08 Hà Văn Tính Đà Nẵng"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:gravity="bottom"
+        android:drawableStart="@drawable/ic_location"
+        android:drawablePadding="@dimen/dimens_5dp"
+        android:drawableTint="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_restaurant_name"/>
+
+    <TextView
+        android:id="@+id/tv_restaurant_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Số điện thoại: 097192784"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:gravity="bottom"
+        android:drawableStart="@drawable/ic_phone"
+        android:drawablePadding="@dimen/dimens_5dp"
+        android:drawableTint="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_restaurant_address"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="60dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

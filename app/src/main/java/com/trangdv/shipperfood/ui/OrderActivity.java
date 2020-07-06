@@ -21,9 +21,14 @@ import com.trangdv.shipperfood.R;
 import com.trangdv.shipperfood.adapter.OrderAdapter;
 import com.trangdv.shipperfood.common.Common;
 import com.trangdv.shipperfood.model.Order;
+import com.trangdv.shipperfood.model.Restaurant;
 import com.trangdv.shipperfood.retrofit.IAnNgonAPI;
 import com.trangdv.shipperfood.retrofit.RetrofitClient;
+import com.trangdv.shipperfood.ui.dialog.RestaurantDetailDialog;
+import com.trangdv.shipperfood.ui.orderdetail.OrderDetailActivity;
 import com.trangdv.shipperfood.utils.DialogUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +43,6 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
     IAnNgonAPI anNgonAPI;
     CompositeDisposable compositeDisposable;
     DialogUtils dialogUtils;
-
-    FirebaseDatabase database;
-    DatabaseReference request;
 
     OrderAdapter orderAdapter;
     RecyclerView rvListOrder;
@@ -67,22 +69,22 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         anNgonAPI = RetrofitClient.getInstance(Common.API_ANNGON_ENDPOINT).create(IAnNgonAPI.class);
         compositeDisposable = new CompositeDisposable();
         dialogUtils = new DialogUtils();
-        database = FirebaseDatabase.getInstance();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 orderList.clear();
                 loadAllOrders();
+                refreshLayout.setRefreshing(false);
             }
         });
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 loadAllOrders();
+                refreshLayout.setRefreshing(false);
             }
         });
-
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +231,46 @@ public class OrderActivity extends AppCompatActivity implements OnMapReadyCallba
         Common.currentOrder = orderList.get(position);
 //        getShippingOrder(Common.currentOrder.getRestaurantId(), Common.currentOrder.getOrderId());
         idItemSelected = position;
+        dialogUtils.showProgress(this);
+        Intent intent = new Intent(this, OrderDetailActivity.class);
+        Bundle bundle = new Bundle();
+        /*if (shippingOrderList.size() == orderList.size() && shippingOrderList.get(position).getOrderId() == orderList.get(position).getOrderId())
+            bundle.putInt("Status" ,shippingOrderList.get(position).getShippingStatus());
+        else
+            bundle.putInt("Status" ,0);*/
+        bundle.putInt("Status", orderList.get(position).getOrderStatus());
+        intent.putExtras(bundle);
+        Common.currentOrder = orderList.get(position);
+        startActivity(intent);
+    }
+
+    @Override
+    public void openRestaurantDetail() {
+        dialogUtils.showProgress(this);
+        compositeDisposable.add(
+                anNgonAPI.getRestaurant(Common.API_KEY)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(restaurantModel -> {
+                                    if (restaurantModel.isSuccess()) {
+                                        Restaurant restaurant = restaurantModel.getResult().get(0);
+                                        Bundle args = new Bundle();
+                                        args.putString("name",restaurant.getName());
+                                        args.putString("address", restaurant.getAddress());
+                                        args.putString("phone", restaurant.getPhone());
+                                        args.putString("lat", restaurant.getLat().toString());
+                                        args.putString("lng", restaurant.getLng().toString());
+                                        RestaurantDetailDialog dialog = new RestaurantDetailDialog();
+                                        dialog.setArguments(args);
+                                        dialog.show(getSupportFragmentManager(), "restaurant detail dialog");
+                                    }
+                                    dialogUtils.dismissProgress();
+                                },
+                                throwable -> {
+                                    dialogUtils.dismissProgress();
+                                }
+                        ));
+
     }
 
     /*private void gotoOrderDetail() {
